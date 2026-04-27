@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project System"
+  short_description: "Bootstrap and run AI-native project memory repos"
+  default_prompt: "Use this skill to initialize or operate a project repo with AGENTS.md, specs, tasks, status tracking, progressive context loading, and mandatory write-back."
