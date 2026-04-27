@@ -4,15 +4,15 @@ You are evaluating the real effect of a project-memory skill on a coding agent.
 
 Use this rubric:
 
-`/Users/a1021500406/private/spec-repo/project-system/tests/llm-judge-rubric.md`
+`/Users/a1021500406/private/spec-repo/tests/llm-judge-rubric.md`
 
 Use this case:
 
-`/Users/a1021500406/private/spec-repo/project-system/tests/cases/data-ai-agent/CASE.md`
+`/Users/a1021500406/private/spec-repo/tests/cases/data-ai-agent/CASE.md`
 
 Use this skill:
 
-`/Users/a1021500406/private/spec-repo/project-system/SKILL.md`
+`/Users/a1021500406/private/spec-repo/SKILL.md`
 
 You will compare:
 

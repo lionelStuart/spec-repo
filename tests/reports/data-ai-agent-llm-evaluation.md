@@ -4,11 +4,11 @@
 
 This report evaluates the practical agent impact of:
 
-- [SKILL.md](/Users/a1021500406/private/spec-repo/project-system/SKILL.md)
-- [assets/templates](/Users/a1021500406/private/spec-repo/project-system/assets/templates)
-- [tests/cases/data-ai-agent/repo-fixture](/Users/a1021500406/private/spec-repo/project-system/tests/cases/data-ai-agent/repo-fixture)
+- [SKILL.md](/Users/a1021500406/private/spec-repo/SKILL.md)
+- [assets/templates](/Users/a1021500406/private/spec-repo/assets/templates)
+- [tests/cases/data-ai-agent/repo-fixture](/Users/a1021500406/private/spec-repo/tests/cases/data-ai-agent/repo-fixture)
 
-The evaluation uses the rubric in [llm-judge-rubric.md](/Users/a1021500406/private/spec-repo/project-system/tests/llm-judge-rubric.md).
+The evaluation uses the rubric in [llm-judge-rubric.md](/Users/a1021500406/private/spec-repo/tests/llm-judge-rubric.md).
 
 ## Scores
 

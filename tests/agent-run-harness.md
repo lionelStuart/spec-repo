@@ -52,9 +52,9 @@ The judge scores:
 
 ## Required Inputs
 
-- [SKILL.md](/Users/a1021500406/private/spec-repo/project-system/SKILL.md)
-- [llm-judge-rubric.md](/Users/a1021500406/private/spec-repo/project-system/tests/llm-judge-rubric.md)
-- [CASE.md](/Users/a1021500406/private/spec-repo/project-system/tests/cases/data-ai-agent/CASE.md)
+- [SKILL.md](/Users/a1021500406/private/spec-repo/SKILL.md)
+- [llm-judge-rubric.md](/Users/a1021500406/private/spec-repo/tests/llm-judge-rubric.md)
+- [CASE.md](/Users/a1021500406/private/spec-repo/tests/cases/data-ai-agent/CASE.md)
 - the repo fixture directory
 
 ## Output Expectations

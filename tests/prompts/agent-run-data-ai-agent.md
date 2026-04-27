@@ -2,15 +2,15 @@
 
 Use `project-system` at:
 
-`/Users/a1021500406/private/spec-repo/project-system`
+`/Users/a1021500406/private/spec-repo`
 
 Operate on this case:
 
-`/Users/a1021500406/private/spec-repo/project-system/tests/cases/data-ai-agent/CASE.md`
+`/Users/a1021500406/private/spec-repo/tests/cases/data-ai-agent/CASE.md`
 
 Operate on this project repo fixture:
 
-`/Users/a1021500406/private/spec-repo/project-system/tests/cases/data-ai-agent/repo-fixture`
+`/Users/a1021500406/private/spec-repo/tests/cases/data-ai-agent/repo-fixture`
 
 ## Task
 

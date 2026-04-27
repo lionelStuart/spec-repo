@@ -10,8 +10,8 @@
 
 ## Evaluated Inputs
 
-- [SKILL.md](/Users/a1021500406/private/spec-repo/project-system/SKILL.md)
-- [README.md](/Users/a1021500406/private/spec-repo/project-system/README.md)
+- [SKILL.md](/Users/a1021500406/private/spec-repo/SKILL.md)
+- [README.md](/Users/a1021500406/private/spec-repo/README.md)
 - updated templates or scripts
 - updated demo or run artifacts
 

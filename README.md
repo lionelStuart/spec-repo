@@ -46,14 +46,14 @@ AGENTS.md
 
 如果运行环境支持直接加载 Codex `skill`，优先读取：
 
-- [SKILL.md](/Users/a1021500406/private/spec-repo/project-system/SKILL.md)
+- [SKILL.md](/Users/a1021500406/private/spec-repo/SKILL.md)
 
 如果 `agent` 是通过仓库文件手动理解这套系统，建议按下面顺序读取：
 
-1. 先读 [README.md](/Users/a1021500406/private/spec-repo/project-system/README.md) 获取总览
-2. 再读 [SKILL.md](/Users/a1021500406/private/spec-repo/project-system/SKILL.md) 获取运行协议
-3. 如果要初始化项目，读取 [assets/templates](/Users/a1021500406/private/spec-repo/project-system/assets/templates) 中的模板
-4. 如果要评测或优化该 `skill`，读取 [tests](/Users/a1021500406/private/spec-repo/project-system/tests) 中的测评材料
+1. 先读 [README.md](/Users/a1021500406/private/spec-repo/README.md) 获取总览
+2. 再读 [SKILL.md](/Users/a1021500406/private/spec-repo/SKILL.md) 获取运行协议
+3. 如果要初始化项目，读取 [assets/templates](/Users/a1021500406/private/spec-repo/assets/templates) 中的模板
+4. 如果要评测或优化该 `skill`，读取 [tests](/Users/a1021500406/private/spec-repo/tests) 中的测评材料
 
 如果运行环境允许执行脚本，优先使用：
 
@@ -80,17 +80,17 @@ AGENTS.md
 
 ### 1. 运行协议
 
-- [SKILL.md](/Users/a1021500406/private/spec-repo/project-system/SKILL.md)
+- [SKILL.md](/Users/a1021500406/private/spec-repo/SKILL.md)
 - 定义 `bootstrap`、渐进加载、执行循环、强制写回规则
 
 ### 2. 发现与触发元数据
 
-- [agents/openai.yaml](/Users/a1021500406/private/spec-repo/project-system/agents/openai.yaml)
+- [agents/openai.yaml](/Users/a1021500406/private/spec-repo/agents/openai.yaml)
 - 定义该 `skill` 如何被发现、如何被描述、如何触发
 
 ### 3. repository 模板
 
-- [assets/templates](/Users/a1021500406/private/spec-repo/project-system/assets/templates)
+- [assets/templates](/Users/a1021500406/private/spec-repo/assets/templates)
 - 提供标准项目记忆结构与各类模板文件
 
 ### 4. 自动化脚本
@@ -109,7 +109,7 @@ AGENTS.md
 
 ### 5. 测评材料
 
-- [tests](/Users/a1021500406/private/spec-repo/project-system/tests)
+- [tests](/Users/a1021500406/private/spec-repo/tests)
 - 包含规则校验、`demo case`、`LLM judge rubric`、`agent-run harness`
 
 ## agent 在开发时如何使用该 skill
@@ -182,7 +182,7 @@ AGENTS.md
 
 相关文件：
 
-- [tests/validate_project_system.py](/Users/a1021500406/private/spec-repo/project-system/tests/validate_project_system.py)
+- [tests/validate_project_system.py](/Users/a1021500406/private/spec-repo/tests/validate_project_system.py)
 
 校验内容：
 
@@ -199,9 +199,9 @@ AGENTS.md
 
 相关文件：
 
-- [tests/cases/data-ai-agent/CASE.md](/Users/a1021500406/private/spec-repo/project-system/tests/cases/data-ai-agent/CASE.md)
-- [tests/cases/data-ai-agent/repo-fixture](/Users/a1021500406/private/spec-repo/project-system/tests/cases/data-ai-agent/repo-fixture)
-- [tests/score_data_ai_agent_case.py](/Users/a1021500406/private/spec-repo/project-system/tests/score_data_ai_agent_case.py)
+- [tests/cases/data-ai-agent/CASE.md](/Users/a1021500406/private/spec-repo/tests/cases/data-ai-agent/CASE.md)
+- [tests/cases/data-ai-agent/repo-fixture](/Users/a1021500406/private/spec-repo/tests/cases/data-ai-agent/repo-fixture)
+- [tests/score_data_ai_agent_case.py](/Users/a1021500406/private/spec-repo/tests/score_data_ai_agent_case.py)
 
 当前规则评分结果：
 
@@ -227,8 +227,8 @@ AGENTS.md
 
 相关文件：
 
-- [tests/llm-judge-rubric.md](/Users/a1021500406/private/spec-repo/project-system/tests/llm-judge-rubric.md)
-- [tests/reports/data-ai-agent-llm-evaluation.md](/Users/a1021500406/private/spec-repo/project-system/tests/reports/data-ai-agent-llm-evaluation.md)
+- [tests/llm-judge-rubric.md](/Users/a1021500406/private/spec-repo/tests/llm-judge-rubric.md)
+- [tests/reports/data-ai-agent-llm-evaluation.md](/Users/a1021500406/private/spec-repo/tests/reports/data-ai-agent-llm-evaluation.md)
 
 当前 `LLM judge` 结果：
 
@@ -264,11 +264,11 @@ AGENTS.md
 
 相关文件：
 
-- [tests/agent-run-harness.md](/Users/a1021500406/private/spec-repo/project-system/tests/agent-run-harness.md)
-- [tests/prompts/agent-run-data-ai-agent.md](/Users/a1021500406/private/spec-repo/project-system/tests/prompts/agent-run-data-ai-agent.md)
-- [tests/prompts/judge-data-ai-agent.md](/Users/a1021500406/private/spec-repo/project-system/tests/prompts/judge-data-ai-agent.md)
-- [tests/check_agent_run_artifacts.py](/Users/a1021500406/private/spec-repo/project-system/tests/check_agent_run_artifacts.py)
-- [tests/reports/data-ai-agent-agent-run-template.md](/Users/a1021500406/private/spec-repo/project-system/tests/reports/data-ai-agent-agent-run-template.md)
+- [tests/agent-run-harness.md](/Users/a1021500406/private/spec-repo/tests/agent-run-harness.md)
+- [tests/prompts/agent-run-data-ai-agent.md](/Users/a1021500406/private/spec-repo/tests/prompts/agent-run-data-ai-agent.md)
+- [tests/prompts/judge-data-ai-agent.md](/Users/a1021500406/private/spec-repo/tests/prompts/judge-data-ai-agent.md)
+- [tests/check_agent_run_artifacts.py](/Users/a1021500406/private/spec-repo/tests/check_agent_run_artifacts.py)
+- [tests/reports/data-ai-agent-agent-run-template.md](/Users/a1021500406/private/spec-repo/tests/reports/data-ai-agent-agent-run-template.md)
 
 这是当前最有价值的一层测评，因为它评估的不是文档“像不像”，而是：
 

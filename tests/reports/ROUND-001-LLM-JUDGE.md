@@ -10,12 +10,12 @@
 
 ## Evaluated Inputs
 
-- [SKILL.md](/Users/a1021500406/private/spec-repo/project-system/SKILL.md)
-- [README.md](/Users/a1021500406/private/spec-repo/project-system/README.md)
-- [scripts/init_project.py](/Users/a1021500406/private/spec-repo/project-system/scripts/init_project.py)
-- [scripts/new_task.py](/Users/a1021500406/private/spec-repo/project-system/scripts/new_task.py)
-- [scripts/check_writeback.py](/Users/a1021500406/private/spec-repo/project-system/scripts/check_writeback.py)
-- [tests/cases/data-ai-agent/repo-fixture](/Users/a1021500406/private/spec-repo/project-system/tests/cases/data-ai-agent/repo-fixture)
+- [SKILL.md](/Users/a1021500406/private/spec-repo/SKILL.md)
+- [README.md](/Users/a1021500406/private/spec-repo/README.md)
+- [scripts/init_project.py](/Users/a1021500406/private/spec-repo/scripts/init_project.py)
+- [scripts/new_task.py](/Users/a1021500406/private/spec-repo/scripts/new_task.py)
+- [scripts/check_writeback.py](/Users/a1021500406/private/spec-repo/scripts/check_writeback.py)
+- [tests/cases/data-ai-agent/repo-fixture](/Users/a1021500406/private/spec-repo/tests/cases/data-ai-agent/repo-fixture)
 
 ## Scores
 
