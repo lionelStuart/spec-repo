@@ -28,15 +28,37 @@ def copy_templates(src: Path, dst: Path, force: bool) -> None:
         shutil.copy2(item, target)
 
 
+def validate_layout_names(project_dir_name: str, repo_dir_name: str) -> tuple[str, str] | None:
+    project_name = project_dir_name.strip().strip("/")
+    repo_name = repo_dir_name.strip().strip("/")
+
+    invalid = {"", ".", ".."}
+    if project_name in invalid or repo_name in invalid:
+        print("Error: --project-dir and --repo-dir must be normal directory names, not '.' or '..'.", file=sys.stderr)
+        return None
+    if project_name == repo_name:
+        print("Error: --project-dir and --repo-dir must be different names.", file=sys.stderr)
+        return None
+    if project_name.startswith(f"{repo_name}/") or repo_name.startswith(f"{project_name}/"):
+        print("Error: project and repo directories must be siblings, not nested.", file=sys.stderr)
+        return None
+    return project_name, repo_name
+
+
 def main() -> int:
     args = parse_args()
+    names = validate_layout_names(args.project_dir, args.repo_dir)
+    if names is None:
+        return 2
+    project_name, repo_name = names
+
     root = Path(__file__).resolve().parents[1]
     templates = root / "assets" / "templates"
     root_target = Path(args.target).resolve()
     root_target.mkdir(parents=True, exist_ok=True)
 
-    project_dir = root_target / args.project_dir
-    repo_dir = root_target / args.repo_dir
+    project_dir = root_target / project_name
+    repo_dir = root_target / repo_name
     project_dir.mkdir(parents=True, exist_ok=True)
     repo_dir.mkdir(parents=True, exist_ok=True)
 
