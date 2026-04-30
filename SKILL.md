@@ -26,22 +26,26 @@ When script execution is allowed, prefer:
 - `scripts/update_index.py` to register or refresh task and spec entries in `INDEX.md`
 - `scripts/check_writeback.py` before ending a development round
 
-Use this default root layout:
+Use this default root layout (keep implementation project files and memory repo isolated as siblings):
 
 ```text
-repo/
-├── AGENTS.md
-├── PROJECT.md
-├── INDEX.md
-├── STATUS.md
-├── ROADMAP.md
-├── ARCHITECTURE.md
-├── specs/
-├── tasks/
-├── decisions/
-├── learnings/
-└── skills/
+root/
+├── project/
+└── repo/
+    ├── AGENTS.md
+    ├── PROJECT.md
+    ├── INDEX.md
+    ├── STATUS.md
+    ├── ROADMAP.md
+    ├── ARCHITECTURE.md
+    ├── specs/
+    ├── tasks/
+    ├── decisions/
+    ├── learnings/
+    └── skills/
 ```
+
+Never flatten template files directly into `root/`. The memory system files belong inside `root/repo/` only.
 
 ## Load Context Progressively
 
