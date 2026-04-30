@@ -1,5 +1,11 @@
 # Project System Skill
 
+> ## Agent 执行约束（必须遵循）
+> 1. 目标项目根目录必须保持 `project/`（业务代码）与 `repo/`（项目记忆仓库）同级隔离，禁止把 `repo` 内文件平铺到根目录。
+> 2. `agent` 开发实现、进度记录、状态同步必须以 `repo/` 为唯一项目管理入口，按 `AGENTS.md -> PROJECT.md -> STATUS.md -> INDEX.md -> task -> spec` 的顺序加载。
+> 3. 每轮开发结束必须写回 `repo/`：至少同步 `tasks/`、`STATUS.md`、`INDEX.md`，并按需要更新 `decisions/`、`learnings/`、`skills/`。
+> 4. 未完成 `repo/` 写回与同步前，不得宣告任务完成。
+
 `project-system` 是一套把代码仓库改造成 AI-native 项目记忆系统的 `skill`。
 
 它面向长期、多轮次、可持续交接的编码工作，目标是让多个 `agent` 在同一个项目里共享：
