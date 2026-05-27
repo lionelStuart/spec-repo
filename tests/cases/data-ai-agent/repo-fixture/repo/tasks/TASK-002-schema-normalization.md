@@ -12,13 +12,19 @@ doing
 
 Normalize date, currency, and percentage columns into planner-safe semantic types with warnings for ambiguous inputs.
 
+## Done Means
+
+- normalized schema includes planner-safe semantic hints for date, currency, and percentage columns
+- ambiguous mixed-format columns emit explicit warnings instead of silent coercion
+
 ## Required Context
 
-- `PROJECT.md`
-- `STATUS.md`
-- `specs/SPEC-001-dataset-ingestion.md`
-- `decisions/ADR-001-metadata-first.md`
-- `skills/SKILL-001-tabular-schema-checklist.md`
+- `repo/skills/project-system-meta/SKILL.md`
+- `repo/PROJECT.md`
+- `repo/STATUS.md`
+- `repo/specs/SPEC-001-dataset-ingestion.md`
+- `repo/decisions/ADR-001-metadata-first.md`
+- `repo/skills/tabular-schema-checklist/SKILL.md`
 
 ## Modify Scope
 
@@ -43,12 +49,21 @@ Normalize date, currency, and percentage columns into planner-safe semantic type
 - clean currency columns normalize consistently
 - percentage columns remain numeric and traceable
 
+## Implementation Notes
+
+- preserve raw uploaded file references
+- keep schema output stable for planner consumers
+
 ## Progress
 
 - [x] Planned
 - [ ] Implemented
 - [ ] Validated
 - [ ] Written back
+
+## Validation
+
+- not run yet; implementation is still in progress
 
 ## Result
 

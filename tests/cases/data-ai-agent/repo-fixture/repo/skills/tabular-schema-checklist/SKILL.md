@@ -1,3 +1,8 @@
+---
+name: tabular-schema-checklist
+description: Use when implementing or reviewing CSV or Excel ingestion schema profiling, especially date, currency, percentage, mixed-format, or planner-facing schema normalization behavior.
+---
+
 # SKILL-001: Tabular Schema Checklist
 
 ## Applies To

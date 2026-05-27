@@ -6,14 +6,21 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests" / "cases" / "data-ai-agent" / "repo-fixture"
+MEMORY_REPO = FIXTURE / "repo"
 
 
 def read(relpath: str) -> str:
-    return (FIXTURE / relpath).read_text()
+    if relpath == "AGENTS.md":
+        return (FIXTURE / relpath).read_text()
+    return (MEMORY_REPO / relpath).read_text()
 
 
 def exists(relpath: str) -> bool:
-    return (FIXTURE / relpath).exists()
+    if relpath == "AGENTS.md":
+        return (FIXTURE / relpath).exists()
+    if relpath == "repo":
+        return MEMORY_REPO.exists()
+    return (MEMORY_REPO / relpath).exists()
 
 
 def check(relpath: str, phrases: list[str]) -> bool:
@@ -24,6 +31,7 @@ def check(relpath: str, phrases: list[str]) -> bool:
 def score_structure() -> tuple[int, str]:
     required = [
         "AGENTS.md",
+        "repo",
         "PROJECT.md",
         "INDEX.md",
         "STATUS.md",
@@ -34,7 +42,7 @@ def score_structure() -> tuple[int, str]:
         "tasks/TASK-002-schema-normalization.md",
         "decisions/ADR-001-metadata-first.md",
         "learnings/LEARN-001-date-column-normalization.md",
-        "skills/SKILL-001-tabular-schema-checklist.md",
+        "skills/tabular-schema-checklist/SKILL.md",
     ]
     missing = [path for path in required if not exists(path)]
     if missing:
@@ -45,7 +53,7 @@ def score_structure() -> tuple[int, str]:
 def score_loading_protocol() -> tuple[int, str]:
     if check(
         "AGENTS.md",
-        ["Mandatory Read Order", "`PROJECT.md`", "`STATUS.md`", "`INDEX.md`", "Do not read the whole repository by default."],
+        ["Mandatory Read Order", "`repo/PROJECT.md`", "`repo/STATUS.md`", "`repo/INDEX.md`", "Do not read the whole repository by default."],
     ):
         return 20, "progressive loading protocol is explicit"
     return 0, "loading protocol is incomplete"
@@ -83,7 +91,7 @@ def score_self_bootstrap() -> tuple[int, str]:
         ["## Cause", "## Fix", "## Reuse Value"],
     )
     skill_ok = check(
-        "skills/SKILL-001-tabular-schema-checklist.md",
+        "skills/tabular-schema-checklist/SKILL.md",
         ["## Checklist", "## Common Failure Modes", "## Verification"],
     )
     if learning_ok and skill_ok:

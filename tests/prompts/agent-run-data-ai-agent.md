@@ -26,8 +26,8 @@ Advance the project from the current state by completing the active work around 
 ## Minimum Expected Outputs
 
 - update the active task progress and result
-- update `STATUS.md`
-- update `INDEX.md` if task state changes
+- update `repo/STATUS.md`
+- update `repo/INDEX.md` if task state changes
 - add or update a learning if new reusable debugging knowledge emerges
 - add or update a reusable skill if the learning should become repeatable guidance
 

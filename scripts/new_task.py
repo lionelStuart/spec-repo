@@ -24,11 +24,20 @@ def slugify(text: str) -> str:
     return slug or "task"
 
 
+def find_index_file(repo: Path, item_id: str) -> str | None:
+    index_path = repo / "INDEX.md"
+    if not index_path.exists():
+        return None
+    pattern = re.compile(rf"^\|\s*{re.escape(item_id)}\s*\|\s*`?([^|`]+)`?\s*\|", re.M)
+    match = pattern.search(index_path.read_text())
+    return match.group(1).strip() if match else None
+
+
 def main() -> int:
     args = parse_args()
     repo = Path(args.repo).resolve()
-    repo_template = repo / "tasks" / "TASK-001-template.md"
-    skill_template = Path(__file__).resolve().parents[1] / "assets" / "templates" / "tasks" / "TASK-001-template.md"
+    repo_template = repo / "_templates" / "TASK-template.md"
+    skill_template = Path(__file__).resolve().parents[1] / "assets" / "templates" / "_templates" / "TASK-template.md"
     template = repo_template if repo_template.exists() else skill_template
     if not template.exists():
         print("Task template not found.")
@@ -39,7 +48,11 @@ def main() -> int:
     content = content.replace("[Task Name]", args.title)
     content = content.replace("\ndraft\n", f"\n{args.status}\n", 1)
     content = content.replace("`SPEC-001`", f"`{args.spec}`", 1)
-    content = content.replace("specs/SPEC-001-template.md", f"specs/{args.spec}.md")
+    spec_file = find_index_file(repo, args.spec) or f"specs/{args.spec}.md"
+    spec_ref = spec_file if spec_file.startswith("repo/") else f"repo/{spec_file}"
+    content = content.replace("repo/specs/SPEC-001.md", spec_ref)
+    content = content.replace("repo/specs/SPEC-001-template.md", spec_ref)
+    content = content.replace("`specs/SPEC-001-template.md`", f"`{spec_ref}`")
 
     filename = f"{args.task_id}-{slugify(args.title)}.md"
     destination = repo / "tasks" / filename

@@ -19,5 +19,5 @@ proposed
 
 ## Related Work
 
-- `specs/[spec-file].md`
-- `tasks/[task-file].md`
+- `repo/specs/[spec-file].md`
+- `repo/tasks/[task-file].md`

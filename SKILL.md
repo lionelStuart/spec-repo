@@ -14,38 +14,45 @@ Use the scripts in [`scripts/`](./scripts/) when available so repetitive setup a
 
 When the repository does not already contain a project memory system:
 
-1. Create the root files from `assets/templates/`.
-2. Create the directories from `assets/templates/specs`, `tasks`, `decisions`, `learnings`, and `skills`.
-3. Replace placeholder values before starting real work.
-4. Keep the file names stable unless the project already has stronger conventions.
+1. Create root `AGENTS.md` from `assets/templates/AGENTS.md`.
+2. Create `repo/` from the remaining `assets/templates/` files and directories.
+3. Ensure `repo/skills/project-system-meta/SKILL.md` exists and is referenced by root `AGENTS.md`.
+4. Replace placeholder values before starting real work.
+5. Keep the file names stable unless the project already has stronger conventions.
 
 When script execution is allowed, prefer:
 
 - `scripts/init_project.py` to materialize the template repo
 - `scripts/new_task.py` to create a new task file
 - `scripts/update_index.py` to register or refresh task and spec entries in `INDEX.md`
+- `scripts/archive_item.py` to move inactive tasks and specs out of the active working set
 - `scripts/check_writeback.py` before ending a development round
 
-Use this default root layout (keep implementation project files and memory repo isolated as siblings):
+Use this default root layout (keep the project-level agent protocol at the project root and project memory inside `repo/`):
 
 ```text
 root/
-├── project/
+├── AGENTS.md
+├── src/ or app files
+├── package/config/build files
+├── docs/ or other normal project files
 └── repo/
-    ├── AGENTS.md
     ├── PROJECT.md
     ├── INDEX.md
     ├── STATUS.md
     ├── ROADMAP.md
     ├── ARCHITECTURE.md
+    ├── _templates/
     ├── specs/
     ├── tasks/
+    ├── archive/
     ├── decisions/
     ├── learnings/
     └── skills/
 ```
 
-Never flatten template files directly into `root/`. The memory system files belong inside `root/repo/` only.
+Only `AGENTS.md` from this skill belongs directly in `root/`. All other memory system files belong inside `root/repo/`.
+Do not move normal project files into `repo/`; source code, app configuration, tests, docs, and build files stay in their existing project-root locations.
 
 ## Load Context Progressively
 
@@ -54,12 +61,13 @@ Never read the whole repo by default.
 Read in this order:
 
 1. `AGENTS.md`
-2. `PROJECT.md`
-3. `STATUS.md`
-4. `INDEX.md`
-5. The active task in `tasks/`
-6. The task-linked spec in `specs/`
-7. Only the architecture, decision, or skill files referenced by that task or spec
+2. `repo/skills/project-system-meta/SKILL.md`
+3. `repo/PROJECT.md`
+4. `repo/STATUS.md`
+5. `repo/INDEX.md`
+6. The active task in `repo/tasks/`
+7. The task-linked spec in `repo/specs/`
+8. Only the architecture, decision, or skill files referenced by that task or spec
 
 Use `INDEX.md` as the retrieval map. Do not guess document names if the index already defines them.
 
@@ -82,6 +90,9 @@ Use these rules:
 - Do not work from a spec alone when the change is nontrivial.
 - Do not modify unrelated files.
 - Do not read architecture or decisions unless the active task depends on them.
+- Read `repo/ROADMAP.md` only for planning, milestone, priority, release-scope, or backlog changes.
+- Read or update `repo/ARCHITECTURE.md` when module boundaries, invariants, interfaces, or cross-module behavior change.
+- Add or update `repo/decisions/`, `repo/learnings/`, and `repo/skills/` only when their trigger conditions are met, but do not leave those triggers only in chat context.
 - Do not finish a task without writing back state.
 
 ## Write Back State
@@ -92,10 +103,12 @@ At the end of every implementation task, update all applicable files:
 2. Update `STATUS.md` with current focus, completed work, open issues, and next steps.
 3. Update `INDEX.md` task status when state changed.
 4. Update the linked spec if acceptance criteria or constraints changed.
-5. Add or update an ADR in `decisions/` if a durable technical choice was made.
-6. Add a learning in `learnings/` if a new failure mode or debugging fact was discovered.
-7. Add or update a reusable procedure in `skills/` if the learning can be executed again.
-8. Record the round's `LLM judge` result in a report or status artifact so the next round can optimize against it.
+5. Update `ROADMAP.md` if milestones, priorities, release scope, or backlog themes changed.
+6. Update `ARCHITECTURE.md` if boundaries, invariants, interfaces, or cross-module behavior changed.
+7. Add or update an ADR in `decisions/` if a durable technical choice was made.
+8. Add a learning in `learnings/` if a new failure mode or debugging fact was discovered.
+9. Add or update a reusable procedure in `skills/` if the learning can be executed again.
+10. Record the round's `LLM judge` result in a report or status artifact so the next round can optimize against it.
 
 Prefer small, specific write-backs. Do not dump long narratives into `STATUS.md`.
 
@@ -116,28 +129,31 @@ If the environment cannot run a full independent judge, record that explicitly i
 
 Use the templates as the baseline contract:
 
-- `AGENTS.md`: repo rules, loading order, write-back rules
-- `PROJECT.md`: goals, non-goals, terminology, global constraints
-- `INDEX.md`: document IDs, state, tags, dependencies
-- `STATUS.md`: short-term memory for the next development round
-- `ROADMAP.md`: milestone and release view
-- `ARCHITECTURE.md`: system boundaries and invariants
-- `specs/`: capability definitions
-- `tasks/`: executable work units
-- `decisions/`: durable technical decisions
-- `learnings/`: incident-style findings and debugging notes
-- `skills/`: reusable procedures distilled from repeated work
+- root `AGENTS.md`: project-level agent entrypoint, loading order, write-back rules
+- `repo/skills/project-system-meta/SKILL.md`: meta skill that defines how to operate project-system as a closed loop
+- `repo/PROJECT.md`: goals, non-goals, terminology, global constraints
+- `repo/INDEX.md`: document IDs, state, tags, dependencies
+- `repo/STATUS.md`: short-term memory for the next development round
+- `repo/ROADMAP.md`: milestone and release view
+- `repo/ARCHITECTURE.md`: system boundaries and invariants
+- `repo/_templates/`: reusable local templates, not active work
+- `repo/specs/`: capability definitions
+- `repo/tasks/`: executable work units
+- `repo/archive/`: completed, canceled, superseded, or deprecated specs/tasks moved out of the active working set
+- `repo/decisions/`: durable technical decisions
+- `repo/learnings/`: incident-style findings and debugging notes
+- `repo/skills/`: reusable procedures distilled from repeated work
 
 ## Use The Templates
 
 Read template files from `assets/templates/` only when needed:
 
-- Use `AGENTS.md`, `PROJECT.md`, `INDEX.md`, `STATUS.md`, `ROADMAP.md`, and `ARCHITECTURE.md` when bootstrapping.
-- Use `specs/SPEC-001-template.md` to define a new capability.
-- Use `tasks/TASK-001-template.md` to define an execution unit.
-- Use `decisions/ADR-template.md` for architecture decisions.
-- Use `learnings/LEARNING-template.md` for postmortems or debugging findings.
-- Use `skills/SKILL-template.md` when promoting a learning into a reusable procedure.
+- Use `AGENTS.md` at the project root, then `PROJECT.md`, `INDEX.md`, `STATUS.md`, `ROADMAP.md`, and `ARCHITECTURE.md` inside `repo/` when bootstrapping.
+- Use `_templates/SPEC-template.md` to define a new capability.
+- Use `_templates/TASK-template.md` to define an execution unit.
+- Use `_templates/ADR-template.md` for architecture decisions.
+- Use `_templates/LEARNING-template.md` for postmortems or debugging findings.
+- Use `_templates/SKILL-template.md` when promoting a learning into a reusable procedure.
 
 ## Use The Scripts
 
@@ -146,6 +162,7 @@ Prefer the provided scripts over handwritten repetitive setup:
 - `scripts/init_project.py`: initialize a target repo from the template set
 - `scripts/new_task.py`: create a task file with task ID, title, and source spec filled in
 - `scripts/update_index.py`: add or refresh `spec` and `task` rows in `INDEX.md`
+- `scripts/archive_item.py`: move inactive tasks/specs to `repo/archive/` and record them in `repo/archive/MANIFEST.md`
 - `scripts/check_writeback.py`: verify that core write-back artifacts still contain required sections
 
 These scripts reduce drift in repetitive project-memory operations. They do not replace task judgment.

@@ -1,23 +1,37 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
+from pathlib import Path, PurePath
 import argparse
 import shutil
 import sys
 
 
+REPO_DIRECTORIES = [
+    "specs",
+    "tasks",
+    "decisions",
+    "learnings",
+    "skills",
+    "archive/tasks",
+    "archive/specs",
+    "_templates",
+]
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Initialize a project-memory repo from project-system templates.")
-    parser.add_argument("target", help="Target root path that will contain sibling project and repo directories")
+    parser.add_argument("target", help="Target project root path that will contain AGENTS.md and the repo directory")
     parser.add_argument("--repo-dir", default="repo", help="Name of the project-memory repository directory")
-    parser.add_argument("--project-dir", default="project", help="Name of the implementation project directory")
+    parser.add_argument("--project-dir", help=argparse.SUPPRESS)
     parser.add_argument("--force", action="store_true", help="Overwrite existing files")
     return parser.parse_args()
 
 
-def copy_templates(src: Path, dst: Path, force: bool) -> None:
+def copy_repo_templates(src: Path, dst: Path, force: bool) -> None:
     for item in sorted(src.rglob("*")):
         rel = item.relative_to(src)
+        if rel == Path("AGENTS.md"):
+            continue
         target = dst / rel
         if item.is_dir():
             target.mkdir(parents=True, exist_ok=True)
@@ -28,43 +42,44 @@ def copy_templates(src: Path, dst: Path, force: bool) -> None:
         shutil.copy2(item, target)
 
 
-def validate_layout_names(project_dir_name: str, repo_dir_name: str) -> tuple[str, str] | None:
-    project_name = project_dir_name.strip().strip("/")
-    repo_name = repo_dir_name.strip().strip("/")
+def copy_root_file(src: Path, dst: Path, force: bool) -> None:
+    if dst.exists() and not force:
+        return
+    shutil.copy2(src, dst)
 
-    invalid = {"", ".", ".."}
-    if project_name in invalid or repo_name in invalid:
-        print("Error: --project-dir and --repo-dir must be normal directory names, not '.' or '..'.", file=sys.stderr)
+
+def validate_dir_name(value: str, label: str) -> str | None:
+    name = value.strip()
+    path = PurePath(name)
+
+    if not name or path.is_absolute() or len(path.parts) != 1 or name in {".", ".."}:
+        print(f"Error: {label} must be a single directory name inside the target root.", file=sys.stderr)
         return None
-    if project_name == repo_name:
-        print("Error: --project-dir and --repo-dir must be different names.", file=sys.stderr)
-        return None
-    if project_name.startswith(f"{repo_name}/") or repo_name.startswith(f"{project_name}/"):
-        print("Error: project and repo directories must be siblings, not nested.", file=sys.stderr)
-        return None
-    return project_name, repo_name
+    return name
 
 
 def main() -> int:
     args = parse_args()
-    names = validate_layout_names(args.project_dir, args.repo_dir)
-    if names is None:
+    repo_name = validate_dir_name(args.repo_dir, "--repo-dir")
+    if repo_name is None:
         return 2
-    project_name, repo_name = names
+    if args.project_dir:
+        print("Warning: --project-dir is deprecated and ignored; project files live in the target root.", file=sys.stderr)
 
     root = Path(__file__).resolve().parents[1]
     templates = root / "assets" / "templates"
     root_target = Path(args.target).resolve()
     root_target.mkdir(parents=True, exist_ok=True)
 
-    project_dir = root_target / project_name
     repo_dir = root_target / repo_name
-    project_dir.mkdir(parents=True, exist_ok=True)
     repo_dir.mkdir(parents=True, exist_ok=True)
+    for relpath in REPO_DIRECTORIES:
+        (repo_dir / relpath).mkdir(parents=True, exist_ok=True)
 
-    copy_templates(templates, repo_dir, args.force)
+    copy_root_file(templates / "AGENTS.md", root_target / "AGENTS.md", args.force)
+    copy_repo_templates(templates, repo_dir, args.force)
     print(f"Initialized project root at {root_target}")
-    print(f"- project directory: {project_dir}")
+    print(f"- agent protocol: {root_target / 'AGENTS.md'}")
     print(f"- memory repo directory: {repo_dir}")
     if not args.force:
         print("Existing files were preserved. Use --force to overwrite template-managed files.")

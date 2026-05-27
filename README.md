@@ -1,8 +1,8 @@
 # Project System Skill
 
 > ## Agent 执行约束（必须遵循）
-> 1. 目标项目根目录必须保持 `project/`（业务代码）与 `repo/`（项目记忆仓库）同级隔离，禁止把 `repo` 内文件平铺到根目录。
-> 2. `agent` 开发实现、进度记录、状态同步必须以 `repo/` 为唯一项目管理入口，按 `AGENTS.md -> PROJECT.md -> STATUS.md -> INDEX.md -> task -> spec` 的顺序加载。
+> 1. 目标项目根目录必须包含根级 `AGENTS.md` 与 `repo/` 项目记忆仓库，禁止把 `repo` 内文件平铺到根目录。
+> 2. `agent` 开发实现、进度记录、状态同步必须以根级 `AGENTS.md` 和 `repo/` 为项目管理入口，按 `AGENTS.md -> repo/PROJECT.md -> repo/STATUS.md -> repo/INDEX.md -> task -> spec` 的顺序加载。
 > 3. 每轮开发结束必须写回 `repo/`：至少同步 `tasks/`、`STATUS.md`、`INDEX.md`，并按需要更新 `decisions/`、`learnings/`、`skills/`。
 > 4. 未完成 `repo/` 写回与同步前，不得宣告任务完成。
 
@@ -32,24 +32,31 @@
 4. 要求每轮开发后把 `status`、`decisions`、`learnings`、`skills` 写回仓库
 5. 让项目具备多轮开发连续性，而不是依赖当前对话窗口的临时记忆
 
-核心结构如下：
+核心结构如下。这个布局是 `project-system` 的固定约束，后续修改脚本或模板时不能把普通项目文件移动进 `repo/`，也不能把 `repo/` 内的记忆文件平铺到项目根目录：
 
 ```text
 root/
-├── project/
+├── AGENTS.md
+├── src/                     # 业务源码或应用代码，示例名称，按原项目实际结构保留
+├── tests/                   # 普通项目测试，按原项目实际结构保留
+├── docs/                    # 普通项目文档，按原项目实际结构保留
+├── package/config/build...  # package.json、pyproject.toml、配置和构建文件等
 └── repo/
-    ├── AGENTS.md
-    ├── PROJECT.md
-    ├── INDEX.md
-    ├── STATUS.md
-    ├── ROADMAP.md
-    ├── ARCHITECTURE.md
-    ├── specs/
-    ├── tasks/
-    ├── decisions/
-    ├── learnings/
-    └── skills/
+    ├── PROJECT.md          # 项目记忆
+    ├── INDEX.md            # 项目记忆索引
+    ├── STATUS.md           # 短期状态
+    ├── ROADMAP.md          # 路线图
+    ├── ARCHITECTURE.md     # 架构记忆
+    ├── _templates/         # 本地模板，不属于活跃任务/规格
+    ├── specs/              # 能力规格
+    ├── tasks/              # agent 执行任务
+    ├── archive/            # 已完成/取消/废弃的 specs 和 tasks
+    ├── decisions/          # ADR / 决策记录
+    ├── learnings/          # 可沉淀经验
+    └── skills/             # 可复用流程，包含 project-system-meta/SKILL.md
 ```
+
+`repo/` 只存放项目记忆与 agent 协作工件。业务源码、应用配置、普通文档、测试、构建产物等项目文件保留在项目根目录的常规位置，不移动进 `repo/`。
 
 ## agent 如何加载该 skill
 
@@ -66,20 +73,23 @@ root/
 
 如果运行环境允许执行脚本，优先使用：
 
-1. `scripts/init_project.py <target-root>`（默认创建 `<target-root>/project` 与 `<target-root>/repo`）
+1. `scripts/init_project.py <target-root>`（默认创建 `<target-root>/AGENTS.md` 与 `<target-root>/repo`）
 2. `scripts/new_task.py <repo> <TASK-ID> <title> --spec <SPEC-ID>`
 3. `scripts/update_index.py <repo> <specs|tasks> <ID> <file>`
-4. `scripts/check_writeback.py <repo> --task <relative-task-path>`
+4. `scripts/archive_item.py <repo> <tasks|specs> <ID>`
+5. `scripts/check_writeback.py <repo> --task <relative-task-path>`
 
 当这套 `skill` 被应用到某个目标项目仓库后，`agent` 应该按下面顺序加载目标仓库：
 
 1. `AGENTS.md`
-2. `PROJECT.md`
-3. `STATUS.md`
-4. `INDEX.md`
-5. 当前激活的 `tasks/` 文件
-6. 该 `task` 关联的 `specs/` 文件
-7. 只读取该 `task` 或 `spec` 显式引用的 `architecture`、`decision`、`skill` 文档
+2. `repo/skills/project-system-meta/SKILL.md`
+3. `repo/PROJECT.md`
+4. `repo/STATUS.md`
+5. `repo/INDEX.md`
+6. 当前激活的 `repo/tasks/` 文件
+7. 该 `task` 关联的 `repo/specs/` 文件
+8. 只读取该 `task` 或 `spec` 显式引用的 `architecture`、`decision`、`skill` 文档
+9. 只有查历史、避免重复或执行归档时才读取 `repo/archive/MANIFEST.md`
 
 关键原则只有一条：
 
@@ -128,7 +138,7 @@ root/
 当项目还没有项目记忆系统时：
 
 1. 优先使用 `scripts/init_project.py` 初始化根文件
-2. 创建 `specs/`、`tasks/`、`decisions/`、`learnings/`、`skills/`
+2. 在 `repo/` 内创建 `specs/`、`tasks/`、`decisions/`、`learnings/`、`skills/`
 3. 先补齐真实项目上下文，再开始实现代码
 
 ### Execution
@@ -140,18 +150,28 @@ root/
 3. 只在声明范围内修改文件
 4. 完成实现后必须进行仓库写回
 
+上下文触发规则：
+
+1. 规划、里程碑、优先级、发布范围或 backlog 变化时，读取或更新 `repo/ROADMAP.md`
+2. 模块边界、不变量、接口或跨模块行为变化时，读取或更新 `repo/ARCHITECTURE.md`
+3. 当前 `task` / `spec` 引用 ADR，或产生长期技术选择时，读取或更新 `repo/decisions/`
+4. 排障命中已知失败模式，或发现新的可复用失败模式时，读取或更新 `repo/learnings/`
+5. 当前 `task` / `spec` 引用可复用流程，或经验应沉淀为流程时，读取或更新 `repo/skills/`
+
 ### Write-Back
 
 每轮开发结束时，至少更新所有相关工件：
 
 1. 当前 `task` 的进度与结果
-2. `STATUS.md`
-3. `INDEX.md`
-4. 如果行为约束变化，更新关联 `spec`
-5. 如果产生长期技术选择，更新 `decisions/`
-6. 如果出现新的排障或交付经验，更新 `learnings/`
-7. 如果该经验可以复用，新增或更新 `skills/`
-8. 对本轮产物执行一次 `LLM judge` 打分，并把结果写回报告或状态工件
+2. `repo/STATUS.md`
+3. `repo/INDEX.md`
+4. 如果行为约束变化，更新关联 `repo/specs/`
+5. 如果里程碑、优先级或发布范围变化，更新 `repo/ROADMAP.md`
+6. 如果模块边界、不变量或接口变化，更新 `repo/ARCHITECTURE.md`
+7. 如果产生长期技术选择，更新 `repo/decisions/`
+8. 如果出现新的排障或交付经验，更新 `repo/learnings/`
+9. 如果该经验可以复用，新增或更新 `repo/skills/`
+10. 对本轮产物执行一次 `LLM judge` 打分，并把结果写回报告或状态工件
 
 如果允许执行脚本，建议在结束一轮开发前运行：
 

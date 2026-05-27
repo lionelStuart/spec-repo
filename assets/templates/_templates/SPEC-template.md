@@ -40,6 +40,6 @@ draft
 
 ## Related Context
 
-- `ARCHITECTURE.md`
-- `decisions/[ADR-file].md`
-- `skills/[skill-file].md`
+- `repo/ARCHITECTURE.md`
+- `repo/decisions/[ADR-file].md`
+- `repo/skills/[skill-file].md`

@@ -12,11 +12,17 @@ draft
 
 [Describe the smallest useful execution unit.]
 
+## Done Means
+
+- [Observable outcome that proves this task is complete]
+- [State or behavior that must be true after completion]
+
 ## Required Context
 
-- `PROJECT.md`
-- `STATUS.md`
-- `specs/SPEC-001-template.md`
+- `repo/skills/project-system-meta/SKILL.md`
+- `repo/PROJECT.md`
+- `repo/STATUS.md`
+- `repo/specs/SPEC-001.md`
 
 ## Modify Scope
 
@@ -38,12 +44,20 @@ draft
 - [Test 1]
 - [Test 2]
 
+## Implementation Notes
+
+- [Important implementation constraint or approach]
+
 ## Progress
 
 - [ ] Planned
 - [ ] Implemented
 - [ ] Validated
 - [ ] Written back
+
+## Validation
+
+- [Command or check]: [result]
 
 ## Result
 

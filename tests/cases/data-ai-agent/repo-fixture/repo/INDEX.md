@@ -29,4 +29,13 @@
 
 | ID | File | Applies To |
 | --- | --- | --- |
-| SKILL-001 | `skills/SKILL-001-tabular-schema-checklist.md` | csv,xlsx,schema,profiling |
+| PROJECT-SYSTEM-META | `skills/project-system-meta/SKILL.md` | all project-system agent rounds |
+| SKILL-001 | `skills/tabular-schema-checklist/SKILL.md` | csv,xlsx,schema,profiling |
+
+## Templates
+
+- Spec template: `_templates/SPEC-template.md`
+- Task template: `_templates/TASK-template.md`
+- ADR template: `_templates/ADR-template.md`
+- Learning template: `_templates/LEARNING-template.md`
+- Skill template: `_templates/SKILL-template.md`

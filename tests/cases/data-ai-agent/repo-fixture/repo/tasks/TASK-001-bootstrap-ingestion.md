@@ -12,12 +12,18 @@ done
 
 Create the first ingestion path that accepts an uploaded file and stores baseline dataset metadata.
 
+## Done Means
+
+- uploaded files receive stable dataset IDs
+- baseline metadata is persisted for later schema normalization
+
 ## Required Context
 
-- `PROJECT.md`
-- `STATUS.md`
-- `specs/SPEC-001-dataset-ingestion.md`
-- `ARCHITECTURE.md`
+- `repo/skills/project-system-meta/SKILL.md`
+- `repo/PROJECT.md`
+- `repo/STATUS.md`
+- `repo/specs/SPEC-001-dataset-ingestion.md`
+- `repo/ARCHITECTURE.md`
 
 ## Modify Scope
 
@@ -39,12 +45,22 @@ Create the first ingestion path that accepts an uploaded file and stores baselin
 - upload a valid CSV and confirm dataset ID creation
 - upload an unsupported file and confirm a clear error
 
+## Implementation Notes
+
+- keep ingestion separate from planner behavior
+- preserve the chat-facing response shape
+
 ## Progress
 
 - [x] Planned
 - [x] Implemented
 - [x] Validated
 - [x] Written back
+
+## Validation
+
+- valid CSV upload test: passed
+- unsupported file error test: passed
 
 ## Result
 

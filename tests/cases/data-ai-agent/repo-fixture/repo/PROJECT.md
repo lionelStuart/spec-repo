@@ -26,6 +26,22 @@ Data AI Agent is a workspace assistant for analysts that ingests tabular dataset
 - Preserve traceability from natural-language question to executed data operation.
 - Do not modify original uploaded files.
 
+## Repository Layout
+
+- Implementation files live in the project root using the product's normal source tree.
+- Project memory and agent coordination files live in `repo/`.
+- Do not move ingestion, registry, planner, tests, configs, or build files into `repo/`.
+
+## Coding Standards
+
+- Keep ingestion, planning, and execution boundaries separate.
+- Add tests for schema inference behavior before marking ingestion tasks validated.
+
+## Project Done Means
+
+- analysts can upload CSV and Excel files and inspect normalized schema quality
+- planner-facing schema metadata is stable enough for natural-language analysis planning
+
 ## Terminology
 
 - `dataset registry`: metadata store for uploaded datasets and normalized schema

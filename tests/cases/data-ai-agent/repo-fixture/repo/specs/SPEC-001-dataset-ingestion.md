@@ -45,6 +45,6 @@ Register uploaded CSV and Excel files, infer schema, normalize semantic column t
 
 ## Related Context
 
-- `ARCHITECTURE.md`
-- `decisions/ADR-001-metadata-first.md`
-- `skills/SKILL-001-tabular-schema-checklist.md`
+- `repo/ARCHITECTURE.md`
+- `repo/decisions/ADR-001-metadata-first.md`
+- `repo/skills/tabular-schema-checklist/SKILL.md`

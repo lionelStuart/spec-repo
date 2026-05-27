@@ -20,5 +20,5 @@ Require every uploaded dataset to pass through metadata extraction and schema no
 
 ## Related Work
 
-- `specs/SPEC-001-dataset-ingestion.md`
-- `tasks/TASK-002-schema-normalization.md`
+- `repo/specs/SPEC-001-dataset-ingestion.md`
+- `repo/tasks/TASK-002-schema-normalization.md`
