@@ -19,7 +19,6 @@ Create the first ingestion path that accepts an uploaded file and stores baselin
 
 ## Required Context
 
-- `repo/skills/project-system-meta/SKILL.md`
 - `repo/PROJECT.md`
 - `repo/STATUS.md`
 - `repo/specs/SPEC-001-dataset-ingestion.md`

@@ -11,6 +11,10 @@ import sys
 ACTIVE_STATUSES = {"draft", "ready", "doing", "active", "blocked"}
 ARCHIVABLE_TASK_STATUSES = {"done", "canceled"}
 ARCHIVABLE_SPEC_STATUSES = {"done", "superseded", "deprecated"}
+DEFAULT_RECENT_KEEP = {
+    "tasks": 5,
+    "specs": 3,
+}
 
 SECTION_HEADERS = {
     "tasks": "## Tasks",
@@ -28,8 +32,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("repo", help="Target repo directory, for example ./repo")
     parser.add_argument("kind", choices=["tasks", "specs"], help="Item kind to archive")
     parser.add_argument("item_id", help="Item ID, for example TASK-001 or SPEC-001")
-    parser.add_argument("--reason", default="completed and no longer active", help="Archive reason")
-    parser.add_argument("--force", action="store_true", help="Archive even when status is not normally archivable")
+    parser.add_argument("--reason", default="no longer recent or active", help="Archive reason")
+    parser.add_argument("--keep-recent", type=int, help="Number of inactive items to keep in active INDEX.md before archiving")
+    parser.add_argument("--force", action="store_true", help="Archive even when status, dependency, or recent-retention checks would block it")
     return parser.parse_args()
 
 
@@ -64,6 +69,25 @@ def find_row(index_text: str, kind: str, item_id: str) -> dict[str, str] | None:
         if row["id"] == item_id:
             return row
     return None
+
+
+def inactive_rows(index_text: str, kind: str) -> list[dict[str, str]]:
+    allowed = ARCHIVABLE_TASK_STATUSES if kind == "tasks" else ARCHIVABLE_SPEC_STATUSES
+    _, rows = parse_table_rows(index_text, SECTION_HEADERS[kind])
+    return [row for row in rows if row["status"].lower() in allowed]
+
+
+def recent_retention_blockers(index_text: str, kind: str, item_id: str, keep_recent: int) -> list[str]:
+    if keep_recent <= 0:
+        return []
+
+    inactive = inactive_rows(index_text, kind)
+    recent = inactive[-keep_recent:]
+    if any(row["id"] == item_id for row in recent):
+        return [
+            f"{item_id} is within the most recent {keep_recent} inactive {kind}; keep recent completed work in active memory"
+        ]
+    return []
 
 
 def active_dependents(index_text: str, item_id: str) -> list[str]:
@@ -154,8 +178,10 @@ def main() -> int:
     blockers = active_dependents(index_text, args.item_id)
     if args.kind == "specs":
         blockers.extend(active_tasks_for_spec(index_text, args.item_id))
+    keep_recent = DEFAULT_RECENT_KEEP[args.kind] if args.keep_recent is None else args.keep_recent
+    blockers.extend(recent_retention_blockers(index_text, args.kind, args.item_id, keep_recent))
     if blockers and not args.force:
-        print(f"Error: {args.item_id} is still referenced by active tasks: {', '.join(sorted(set(blockers)))}.", file=sys.stderr)
+        print(f"Error: {args.item_id} cannot be archived yet: {', '.join(sorted(set(blockers)))}.", file=sys.stderr)
         return 1
 
     source = repo / row["file"]

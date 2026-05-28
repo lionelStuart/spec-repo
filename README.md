@@ -53,7 +53,7 @@ root/
     ├── archive/            # 已完成/取消/废弃的 specs 和 tasks
     ├── decisions/          # ADR / 决策记录
     ├── learnings/          # 可沉淀经验
-    └── skills/             # 可复用流程，包含 project-system-meta/SKILL.md
+    └── skills/             # 项目内沉淀的可复用流程
 ```
 
 `repo/` 只存放项目记忆与 agent 协作工件。业务源码、应用配置、普通文档、测试、构建产物等项目文件保留在项目根目录的常规位置，不移动进 `repo/`。
@@ -76,20 +76,20 @@ root/
 1. `scripts/init_project.py <target-root>`（默认创建 `<target-root>/AGENTS.md` 与 `<target-root>/repo`）
 2. `scripts/new_task.py <repo> <TASK-ID> <title> --spec <SPEC-ID>`
 3. `scripts/update_index.py <repo> <specs|tasks> <ID> <file>`
-4. `scripts/archive_item.py <repo> <tasks|specs> <ID>`
-5. `scripts/check_writeback.py <repo> --task <relative-task-path>`
+4. `scripts/project_doctor.py <target-root-or-repo>`
+5. `scripts/archive_item.py <repo> <tasks|specs> <ID>`
+6. `scripts/check_writeback.py <repo> --task <relative-task-path>`
 
 当这套 `skill` 被应用到某个目标项目仓库后，`agent` 应该按下面顺序加载目标仓库：
 
 1. `AGENTS.md`
-2. `repo/skills/project-system-meta/SKILL.md`
-3. `repo/PROJECT.md`
-4. `repo/STATUS.md`
-5. `repo/INDEX.md`
-6. 当前激活的 `repo/tasks/` 文件
-7. 该 `task` 关联的 `repo/specs/` 文件
-8. 只读取该 `task` 或 `spec` 显式引用的 `architecture`、`decision`、`skill` 文档
-9. 只有查历史、避免重复或执行归档时才读取 `repo/archive/MANIFEST.md`
+2. `repo/PROJECT.md`
+3. `repo/STATUS.md`
+4. `repo/INDEX.md`
+5. 当前激活的 `repo/tasks/` 文件
+6. 该 `task` 关联的 `repo/specs/` 文件
+7. 只读取该 `task` 或 `spec` 显式引用的 `architecture`、`decision`、`skill` 文档
+8. 只有查历史、避免重复或执行归档时才读取 `repo/archive/MANIFEST.md`
 
 关键原则只有一条：
 
@@ -117,14 +117,18 @@ root/
 - `scripts/init_project.py`
 - `scripts/new_task.py`
 - `scripts/update_index.py`
+- `scripts/project_doctor.py`
+- `scripts/archive_item.py`
 - `scripts/check_writeback.py`
 
-这四个脚本分别负责：
+这些脚本分别负责：
 
 1. 初始化项目记忆型仓库
 2. 从 `task template` 生成新 `task`
 3. 自动新增或刷新 `INDEX.md` 中的 `spec` / `task` 条目
-4. 在结束一轮开发前检查关键写回工件是否完整
+4. 诊断 `AGENTS.md`、`repo/` 结构、索引、归档入口和项目 skills routing 是否漂移
+5. 在近期保留窗口之后，把已完成、取消、废弃的 `task` / `spec` 移出活跃工作集并记录到 archive manifest
+6. 在结束一轮开发前检查关键写回工件是否完整
 
 ### 5. 测评材料
 
@@ -174,6 +178,8 @@ root/
 10. 对本轮产物执行一次 `LLM judge` 打分，并把结果写回报告或状态工件
 
 如果允许执行脚本，建议在结束一轮开发前运行：
+
+`scripts/project_doctor.py`
 
 `scripts/check_writeback.py`
 

@@ -13,6 +13,12 @@
 | TASK-001 | `tasks/TASK-001-bootstrap-ingestion.md` | done | SPEC-001 | - |
 | TASK-002 | `tasks/TASK-002-schema-normalization.md` | doing | SPEC-001 | TASK-001 |
 
+## Archive
+
+- Archived tasks: `archive/tasks/`
+- Archived specs: `archive/specs/`
+- Archive manifest: `archive/MANIFEST.md`
+
 ## Decisions
 
 | ID | File | Status | Scope |
@@ -29,7 +35,6 @@
 
 | ID | File | Applies To |
 | --- | --- | --- |
-| PROJECT-SYSTEM-META | `skills/project-system-meta/SKILL.md` | all project-system agent rounds |
 | SKILL-001 | `skills/tabular-schema-checklist/SKILL.md` | csv,xlsx,schema,profiling |
 
 ## Templates

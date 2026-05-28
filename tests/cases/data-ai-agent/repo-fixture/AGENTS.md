@@ -5,39 +5,32 @@
 Use root `AGENTS.md` plus `repo/` as the operational memory system for the Data AI Agent project.
 Keep implementation files in the project root. Use `repo/` only for project memory and agent coordination artifacts.
 
-## Protected Meta Skill Link
+## Project-System Governance
 
-Do not remove this section or the link below. This root `AGENTS.md` must always bind the project to the project-system meta skill:
+Do not remove this section. This project is governed by the external `project-system` skill. Agents must follow `project-system` rules when reading or editing `repo/`, including file contracts, task execution, write-back, archive control, and completion checks.
 
-- Required meta skill: `repo/skills/project-system-meta/SKILL.md`
-- Discoverable skill directory: `repo/skills/project-system-meta/`
-
-`repo/skills/project-system-meta/` is an OpenAI/Codex-style meta skill directory. Its `SKILL.md` defines how agents must use `repo/` to build, maintain, validate, archive, and complete this project. Agents must treat it as the operating skill for this project, not as optional documentation.
-
-If the path changes, update the path here, in `repo/INDEX.md`, and in every active task's `Required Context` in the same change. Never leave root `AGENTS.md` without a required meta skill link.
+If this project is moved to an environment where `project-system` is not installed, keep this `AGENTS.md` as the local operating contract and preserve the `repo/` file contracts. Never leave root `AGENTS.md` without a project-system governance section.
 
 ## Mandatory Read Order
 
 Read in this order before implementation:
 
-1. `repo/skills/project-system-meta/SKILL.md`
-2. `repo/PROJECT.md`
-3. `repo/STATUS.md`
-4. `repo/INDEX.md`
-5. the active task in `repo/tasks/`
-6. the linked spec in `repo/specs/`
-7. only linked architecture, decision, or reusable skill documents
+1. `repo/PROJECT.md`
+2. `repo/STATUS.md`
+3. `repo/INDEX.md`
+4. the active task in `repo/tasks/`
+5. the linked spec in `repo/specs/`
+6. only linked architecture, decision, or reusable skill documents
 
 Do not read the whole repository by default.
 
 ## Start A Coding Round
 
-1. Read and follow `repo/skills/project-system-meta/SKILL.md`.
-2. Apply its `File Contracts` when reading or editing any file under `repo/`.
-3. Use `repo/STATUS.md` to identify the current focus.
-4. Use `repo/INDEX.md` to locate the matching task file and linked spec.
-5. Read the task's `Required Context` before editing implementation files.
-6. Confirm the task's `Modify Scope`, `Forbidden`, `Acceptance`, and `Test Plan`.
+1. Follow the `project-system` file contracts when reading or editing any file under `repo/`.
+2. Use `repo/STATUS.md` to identify the current focus.
+3. Use `repo/INDEX.md` to locate the matching task file and linked spec.
+4. Read the task's `Required Context` before editing implementation files.
+5. Confirm the task's `Modify Scope`, `Forbidden`, `Acceptance`, and `Test Plan`.
 
 ## Execution Rules
 
@@ -53,6 +46,16 @@ Do not read the whole repository by default.
 - Read `repo/learnings/` when debugging may repeat a known failure mode.
 - Read `repo/skills/` when a referenced reusable checklist applies.
 - Read `repo/archive/MANIFEST.md` only when checking historical work, avoiding duplicate tasks/specs, or archiving completed work.
+
+## Project Skills Routing
+
+Use `repo/skills/` for project-specific reusable procedures only.
+
+- Read a project skill when the active task, spec, ADR, or learning references it.
+- Read a project skill when the user request or current failure mode matches its `description` frontmatter.
+- Add or update a project skill only after a learning becomes a repeatable procedure.
+- Keep discoverable project skills as OpenAI/Codex-style directories with `SKILL.md` frontmatter.
+- Do not place project-system governance rules in `repo/skills/`; governance stays in this root `AGENTS.md` and the external `project-system` skill.
 
 ## Mandatory End-Of-Task Update
 
@@ -74,4 +77,5 @@ Do not claim a coding task is complete until acceptance criteria pass, validatio
 
 Do not claim the project or current milestone is complete until `repo/ROADMAP.md` exit criteria are satisfied, `repo/STATUS.md` completion state is updated, blocking tasks are closed or moved to follow-up, and validation has passed or is explicitly blocked.
 
-Keep `repo/tasks/` and `repo/specs/` focused on active work; archive completed, canceled, superseded, or deprecated items into `repo/archive/` when safe.
+Do not archive tasks or specs immediately on completion; keep recent inactive records for continuity.
+Keep `repo/tasks/` and `repo/specs/` focused on active work; archive older completed, canceled, superseded, or deprecated items into `repo/archive/` when safe.

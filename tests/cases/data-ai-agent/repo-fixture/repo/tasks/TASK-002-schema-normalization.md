@@ -19,7 +19,6 @@ Normalize date, currency, and percentage columns into planner-safe semantic type
 
 ## Required Context
 
-- `repo/skills/project-system-meta/SKILL.md`
 - `repo/PROJECT.md`
 - `repo/STATUS.md`
 - `repo/specs/SPEC-001-dataset-ingestion.md`

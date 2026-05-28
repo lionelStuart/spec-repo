@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Web Minesweeper</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="topbar" aria-label="Game status">
+        <div>
+          <p class="label">Mines</p>
+          <strong id="mine-count">010</strong>
+        </div>
+        <button id="reset" type="button" aria-label="Reset game">Reset</button>
+        <div>
+          <p class="label">Time</p>
+          <strong id="timer">000</strong>
+        </div>
+      </section>
+
+      <p id="status" class="status" role="status">Reveal a cell to begin.</p>
+      <section id="board" class="board" aria-label="Minesweeper board"></section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

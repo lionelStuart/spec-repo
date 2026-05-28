@@ -29,7 +29,6 @@ def main() -> int:
         repo / "decisions",
         repo / "learnings",
         repo / "skills",
-        repo / "skills" / "project-system-meta/SKILL.md",
     ]
     missing = [str(path) for path in required if not path.exists()]
     if missing:
@@ -49,17 +48,18 @@ def main() -> int:
         return fail("INDEX.md is missing task index")
 
     if (
-        "## Protected Meta Skill Link" not in agents_text
-        or "Required meta skill: `repo/skills/project-system-meta/SKILL.md`" not in agents_text
-        or "Discoverable skill directory: `repo/skills/project-system-meta/`" not in agents_text
-        or "OpenAI/Codex-style meta skill directory" not in agents_text
-        or "operating skill for this project" not in agents_text
-        or "Never leave root `AGENTS.md` without a required meta skill link." not in agents_text
+        "## Project-System Governance" not in agents_text
+        or "external `project-system` skill" not in agents_text
+        or "file contracts, task execution, write-back, archive control, and completion checks" not in agents_text
+        or "## Project Skills Routing" not in agents_text
+        or "Read a project skill when the active task, spec, ADR, or learning references it." not in agents_text
+        or "OpenAI/Codex-style directories with `SKILL.md` frontmatter" not in agents_text
+        or "Never leave root `AGENTS.md` without a project-system governance section." not in agents_text
     ):
-        return fail("AGENTS.md does not protect the project-system meta skill link")
+        return fail("AGENTS.md does not protect project-system governance")
 
-    if "skills/project-system-meta/SKILL.md" not in index_text:
-        return fail("INDEX.md does not register the project-system meta skill")
+    if "project-system-meta" in index_text:
+        return fail("INDEX.md still registers removed project-system-meta skill")
 
     if not task_files:
         return fail("no task files found")

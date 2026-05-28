@@ -4,11 +4,13 @@
 
 | ID | File | Status | Tags | Depends On |
 | --- | --- | --- | --- | --- |
+| SPEC-001 | `specs/SPEC-001-web-minesweeper.md` | done | game,web,static | ARCHITECTURE.md |
 
 ## Tasks
 
 | ID | File | Status | Spec | Depends On |
 | --- | --- | --- | --- | --- |
+| TASK-001 | `tasks/TASK-001-build-web-minesweeper.md` | done | SPEC-001 | - |
 
 ## Archive
 

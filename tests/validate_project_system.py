@@ -24,7 +24,7 @@ REQUIRED_FILES = [
     ROOT / "assets" / "templates" / "_templates" / "ADR-template.md",
     ROOT / "assets" / "templates" / "_templates" / "LEARNING-template.md",
     ROOT / "assets" / "templates" / "_templates" / "SKILL-template.md",
-    ROOT / "assets" / "templates" / "skills" / "project-system-meta/SKILL.md",
+    ROOT / "scripts" / "project_doctor.py",
 ]
 
 
@@ -41,25 +41,13 @@ def fail(message: str) -> int:
     return 1
 
 
-def has_skill_frontmatter(path: Path, expected_name: str) -> bool:
-    text = path.read_text()
+def has_project_system_governance(text: str) -> bool:
     return (
-        text.startswith("---\n")
-        and f"name: {expected_name}" in text
-        and "description:" in text
-        and "\n---\n" in text[4:]
-    )
-
-
-def has_protected_meta_skill_link(text: str) -> bool:
-    return (
-        "## Protected Meta Skill Link" in text
+        "## Project-System Governance" in text
         and "Do not remove this section" in text
-        and "Required meta skill: `repo/skills/project-system-meta/SKILL.md`" in text
-        and "Discoverable skill directory: `repo/skills/project-system-meta/`" in text
-        and "OpenAI/Codex-style meta skill directory" in text
-        and "operating skill for this project" in text
-        and "Never leave root `AGENTS.md` without a required meta skill link." in text
+        and "external `project-system` skill" in text
+        and "file contracts, task execution, write-back, archive control, and completion checks" in text
+        and "Never leave root `AGENTS.md` without a project-system governance section." in text
     )
 
 
@@ -91,7 +79,6 @@ def validate_init_project_layout() -> str | None:
             target / "repo" / "decisions",
             target / "repo" / "learnings",
             target / "repo" / "skills",
-            target / "repo" / "skills" / "project-system-meta/SKILL.md",
         ]
         missing = [str(path.relative_to(target)) for path in expected if not path.exists()]
         if missing:
@@ -102,14 +89,20 @@ def validate_init_project_layout() -> str | None:
             return "init_project.py created deprecated project/ directory"
         root_agents = (target / "AGENTS.md").read_text()
         target_index = (target / "repo" / "INDEX.md").read_text()
-        if not has_protected_meta_skill_link(root_agents):
-            return "AGENTS.md does not protect the project-system meta skill link"
-        if "skills/project-system-meta/SKILL.md" not in target_index:
-            return "INDEX.md does not register project-system-meta/SKILL.md"
-        if not has_skill_frontmatter(target / "repo" / "skills" / "project-system-meta" / "SKILL.md", "project-system-meta"):
-            return "project-system-meta/SKILL.md is missing OpenAI skill frontmatter"
+        if not has_project_system_governance(root_agents):
+            return "AGENTS.md does not protect project-system governance"
+        if "project-system-meta" in target_index:
+            return "INDEX.md still registers removed project-system-meta skill"
         if "tasks/TASK-001-template.md" in target_index or "specs/SPEC-001-template.md" in target_index:
             return "INDEX.md lists template files as active work"
+
+        doctor = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "project_doctor.py"), str(target)],
+            capture_output=True,
+            text=True,
+        )
+        if doctor.returncode != 0:
+            return f"project_doctor.py failed on initialized project: {doctor.stderr or doctor.stdout}"
 
         new_task = subprocess.run(
             [
@@ -165,6 +158,25 @@ def validate_init_project_layout() -> str | None:
             capture_output=True,
             text=True,
         )
+        if archive.returncode == 0:
+            return "archive_item.py archived a recently completed task without --force"
+        if "most recent" not in (archive.stderr or archive.stdout):
+            return f"archive_item.py did not explain recent-retention block: {archive.stderr or archive.stdout}"
+
+        archive = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts" / "archive_item.py"),
+                str(target / "repo"),
+                "tasks",
+                "TASK-002",
+                "--reason",
+                "validation test",
+                "--force",
+            ],
+            capture_output=True,
+            text=True,
+        )
         if archive.returncode != 0:
             return f"archive_item.py failed: {archive.stderr or archive.stdout}"
         if not (target / "repo" / "archive" / "tasks" / "TASK-002-schema-work.md").exists():
@@ -187,13 +199,80 @@ def validate_init_project_layout() -> str | None:
     return None
 
 
+def validate_web_minesweeper_case() -> str | None:
+    case_root = ROOT / "tests" / "cases" / "web-minesweeper"
+    if not case_root.exists():
+        return "web-minesweeper case is missing"
+
+    doctor = subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "project_doctor.py"), str(case_root)],
+        capture_output=True,
+        text=True,
+    )
+    if doctor.returncode != 0:
+        return f"project_doctor.py failed on web-minesweeper case: {doctor.stderr or doctor.stdout}"
+
+    required = [
+        case_root / "index.html",
+        case_root / "styles.css",
+        case_root / "script.js",
+        case_root / "repo" / "tasks" / "TASK-001-build-web-minesweeper.md",
+        case_root / "repo" / "specs" / "SPEC-001-web-minesweeper.md",
+    ]
+    missing = [str(path.relative_to(ROOT)) for path in required if not path.exists()]
+    if missing:
+        return f"web-minesweeper case missing files: {', '.join(missing)}"
+
+    html = (case_root / "index.html").read_text()
+    css = (case_root / "styles.css").read_text()
+    js = (case_root / "script.js").read_text()
+    checks = {
+        "HTML loads styles.css": 'href="styles.css"' in html,
+        "HTML loads script.js": 'src="script.js"' in html,
+        "HTML has board element": 'id="board"' in html,
+        "game uses 9x9 board": "const size = 9;" in js,
+        "game uses 10 mines": "const mineTotal = 10;" in js,
+        "first click blocks neighbors": "const blocked = new Set([safeId, ...neighbors" in js,
+        "CSS renders 9 columns": "repeat(9, 1fr)" in css,
+        "keyboard flag support": 'event.key.toLowerCase() === "f"' in js,
+    }
+    failed = [name for name, passed in checks.items() if not passed]
+    if failed:
+        return f"web-minesweeper static checks failed: {', '.join(failed)}"
+
+    script_check = subprocess.run(
+        ["node", "--check", str(case_root / "script.js")],
+        capture_output=True,
+        text=True,
+    )
+    if script_check.returncode != 0:
+        return f"web-minesweeper script syntax check failed: {script_check.stderr or script_check.stdout}"
+
+    archive = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "archive_item.py"),
+            str(case_root / "repo"),
+            "tasks",
+            "TASK-001",
+            "--reason",
+            "recent retention validation",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    if archive.returncode == 0:
+        return "web-minesweeper recent task archived before retention window elapsed"
+    if "most recent" not in (archive.stderr or archive.stdout):
+        return f"web-minesweeper archive retention block was unclear: {archive.stderr or archive.stdout}"
+
+    return None
+
+
 def main() -> int:
     missing = [str(path.relative_to(ROOT)) for path in REQUIRED_FILES if not path.exists()]
     if missing:
         return fail(f"missing required files: {', '.join(missing)}")
-
-    if not has_skill_frontmatter(ROOT / "assets" / "templates" / "skills" / "project-system-meta" / "SKILL.md", "project-system-meta"):
-        return fail("project-system-meta/SKILL.md is missing OpenAI skill frontmatter")
 
     skill_md = (ROOT / "SKILL.md").read_text()
     for phrase in REQUIRED_SKILL_PHRASES:
@@ -202,15 +281,15 @@ def main() -> int:
 
     template_checks = {
         "assets/templates/AGENTS.md": [
-            "## Protected Meta Skill Link",
+            "## Project-System Governance",
             "Do not remove this section",
-            "Required meta skill: `repo/skills/project-system-meta/SKILL.md`",
-            "Discoverable skill directory: `repo/skills/project-system-meta/`",
-            "OpenAI/Codex-style meta skill directory",
-            "operating skill for this project",
-            "repo/skills/project-system-meta/SKILL.md",
-            "File Contracts",
+            "external `project-system` skill",
+            "file contracts, task execution, write-back, archive control, and completion checks",
             "Start A Coding Round",
+            "## Project Skills Routing",
+            "Read a project skill when the active task, spec, ADR, or learning references it.",
+            "description` frontmatter",
+            "OpenAI/Codex-style directories with `SKILL.md` frontmatter",
             "Completion Gate",
             "Do not claim the project or a milestone is complete",
         ],
@@ -228,13 +307,12 @@ def main() -> int:
             "## Project Completion Signals",
         ],
         "assets/templates/_templates/TASK-template.md": [
-            "repo/skills/project-system-meta/SKILL.md",
             "## Done Means",
             "## Validation",
         ],
-        "assets/templates/skills/project-system-meta/SKILL.md": [
-            "## Required Loop",
+        "SKILL.md": [
             "## Project-System Tooling",
+            "scripts/project_doctor.py",
             "## File Contracts",
             "### `repo/PROJECT.md`",
             "### `repo/STATUS.md`",
@@ -256,6 +334,8 @@ def main() -> int:
             "## Archived Specs",
             "## Archived Tasks",
             "## Archive Rules",
+            "Do not archive an item immediately just because it is done.",
+            "Keep the most recent 5 inactive tasks and 3 inactive specs",
         ],
     }
     for relpath, phrases in template_checks.items():
@@ -269,7 +349,6 @@ def main() -> int:
         "task": "_templates/TASK-template.md",
         "decision": "_templates/ADR-template.md",
         "learning": "_templates/LEARNING-template.md",
-        "meta skill": "skills/project-system-meta/SKILL.md",
         "skill": "_templates/SKILL-template.md",
     }
     for label, relpath in templates.items():
@@ -287,6 +366,10 @@ def main() -> int:
     init_failure = validate_init_project_layout()
     if init_failure:
         return fail(init_failure)
+
+    web_case_failure = validate_web_minesweeper_case()
+    if web_case_failure:
+        return fail(web_case_failure)
 
     print("PASS: project-system structure and references look consistent")
     return 0
